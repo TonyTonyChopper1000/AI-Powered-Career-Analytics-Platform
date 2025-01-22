@@ -51,10 +51,10 @@ This platform represents an innovative approach to educational content creation 
 ## Tech Stack Learning time line : 
 ![Tech Stack Learning](https://github.com/users/luckymaddineni/projects/1)
 
-### Trello :- Software development dashboard(Kanban)
+### Trello :- Software development Dashboard(Kanban)
 ![Software Development Dashboard]()
 
-### Trello :- Daily Task Progression Dashboard
+### Trello :- Daily Task Progression Dashboard(Kanban)
 ![Daily Task Progression Dashboard]()
 
 

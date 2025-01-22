@@ -52,10 +52,10 @@ This platform represents an innovative approach to educational content creation 
 ![Tech Stack Learning](https://github.com/users/luckymaddineni/projects/1)
 
 ### Trello :- Software development Dashboard(Kanban)
-![Software Development Dashboard]()
+![Software Development Dashboard](https://trello.com/invite/b/678d1787452600a8b819f27a/ATTI9df9bdd16702e62d5e8e3f46990a173e13111F53/ai-powered-career-analytics-platform)
 
 ### Trello :- Daily Task Progression Dashboard(Kanban)
-![Daily Task Progression Dashboard]()
+![Daily Task Progression Dashboard](https://trello.com/invite/b/679118c829e24fe2344f6d98/ATTIdaa3670eea2a7378b60d5ffad4cbd7015202AFC2/daily-task-progression-dashboard)
 
 
 ## Install

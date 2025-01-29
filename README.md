@@ -57,8 +57,8 @@ This platform represents an innovative approach to educational content creation 
 ### Trello :- Daily Task Progression Dashboard(Kanban)
 [Daily Task Progression Dashboard](https://trello.com/invite/b/679118c829e24fe2344f6d98/ATTIdaa3670eea2a7378b60d5ffad4cbd7015202AFC2/daily-task-progression-dashboard)
 
-### 16 Week Development Shedule (Primary)
-![16 week development shedule link](https://www.mermaidchart.com/raw/58b55bc3-7dbc-4260-86e1-4a36a3866f25?theme=light&version=v0.1&format=svg)
+### 16 Week Development Schedule (Primary)
+![16 week development schedule link](https://www.mermaidchart.com/raw/58b55bc3-7dbc-4260-86e1-4a36a3866f25?theme=light&version=v0.1&format=svg)
 
 
 ## Install

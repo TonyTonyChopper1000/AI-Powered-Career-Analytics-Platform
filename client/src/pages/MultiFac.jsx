@@ -1,9 +1,9 @@
 import React from 'react'
 
-const 2FAPage = () => {
+const MultiFac = () => {
   return (
     <div>2FAPage</div>
   )
 }
 
-export default 2FAPage
+export default MultiFac;

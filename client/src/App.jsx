@@ -6,6 +6,7 @@ import LandingPage from "./pages/LandingPage"
 import MultiFac from "./pages/MultiFac"
 import UserProfile from './pages/UserProfile';
 import AdminDashboard from './pages/AdminDashboard';
+import UserFeedback from './pages/UserfeedbackPage';
 
 const App = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const App = () => {
         <Route path='/home' element={<LandingPage/>} />
         <Route path='/2fa' element={<MultiFac />} />
         <Route path='/userprofile' element={<UserProfile />} />
+        <Route path='/feedback' element={<UserFeedback />} />
         <Route path='/admin/dashboard' element={<AdminDashboard />} />
       </Routes>
     </div>

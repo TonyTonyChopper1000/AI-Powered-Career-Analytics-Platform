@@ -1,32 +1,11 @@
+// Updated Hero.js
 import React from 'react';
-import { FiBarChart2, FiTrendingUp, FiZap, FiArrowRight, FiCheckCircle } from 'react-icons/fi';
+import { FiTrendingUp, FiZap, FiArrowRight, FiCheckCircle } from 'react-icons/fi';
 
 const Hero = () => {
   return (
-    <div className="bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-900 min-h-screen">
+    <div className="bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-900 pt-24 md:pt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Navigation */}
-        <nav className="py-6">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <div className="text-white font-bold text-xl flex items-center">
-                <FiBarChart2 className="mr-2 h-6 w-6" />
-                <span>CareerAI</span>
-              </div>
-            </div>
-            <div className="hidden md:flex space-x-8 text-gray-200">
-              <a href="#" className="hover:text-white transition-colors">Features</a>
-              <a href="#" className="hover:text-white transition-colors">How It Works</a>
-              <a href="#" className="hover:text-white transition-colors">Pricing</a>
-              <a href="#" className="hover:text-white transition-colors">About</a>
-            </div>
-            <div className="flex items-center space-x-4">
-              <a href="#" className="text-gray-200 hover:text-white transition-colors">Login</a>
-              <a href="#" className="bg-white text-indigo-600 hover:bg-gray-100 transition-colors font-medium px-4 py-2 rounded-lg">Get Started</a>
-            </div>
-          </div>
-        </nav>
-
         {/* Hero content */}
         <div className="py-12 md:py-20">
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -185,9 +164,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      
-      {/* Floating stats */}
-     
     </div>
   );
 };

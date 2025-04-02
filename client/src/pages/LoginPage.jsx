@@ -1,19 +1,68 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiUser } from 'react-icons/fi';
+import { signInWithEmail } from '../services/firebase';
+import { toast } from 'react-toastify';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    rememberMe: false
+  });
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login attempted with:', { email, password });
-    // Handle authentication logic here
+    setLoading(true);
+    
+    try {
+      const result = await signInWithEmail(formData.email, formData.password);
+      
+      if (result.success) {
+        const { user, userData, emailVerified } = result;
+        
+        // Check if user is an admin
+        if (userData.role === 'admin') {
+          toast.success("Welcome back, Admin!");
+          navigate('/admin/dashboard');
+          return;
+        }
+        
+        // Check if email is verified for regular users
+        if (!emailVerified) {
+          toast.info("Please verify your email to continue");
+          navigate('/email-verification', { 
+            state: { email: formData.email } 
+          });
+          return;
+        }
+        
+        // Regular user with verified email
+        toast.success("Login successful!");
+        navigate('/home');
+      } else {
+        toast.error(result.error || "Login failed. Please check your credentials.");
+      }
+    } catch (error) {
+      toast.error(error.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -21,7 +70,7 @@ const LoginPage = () => {
       {/* Left side - Image */}
       <div className="hidden md:flex md:w-1/2 bg-indigo-600 relative overflow-hidden">
         <img 
-          src="https://i.pinimg.com/736x/ed/b9/e9/edb9e90436af10df178fa9be61f22035.jpg" 
+          src="/images/login-bg.jpg" 
           alt="Login background" 
           className="object-cover w-full h-full opacity-80"
         />
@@ -59,8 +108,8 @@ const LoginPage = () => {
                   id="email"
                   name="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={formData.email}
+                  onChange={handleChange}
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="you@example.com"
                   required
@@ -81,8 +130,8 @@ const LoginPage = () => {
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={formData.password}
+                  onChange={handleChange}
                   className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="••••••••"
                   required
@@ -107,20 +156,22 @@ const LoginPage = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
-                  id="remember-me"
-                  name="remember-me"
+                  id="rememberMe"
+                  name="rememberMe"
                   type="checkbox"
+                  checked={formData.rememberMe}
+                  onChange={handleChange}
                   className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-700">
                   Remember me
                 </label>
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                <Link to="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
                   Forgot password?
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -128,9 +179,14 @@ const LoginPage = () => {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                disabled={loading}
+                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white transition-colors duration-200 ${
+                  loading
+                    ? 'bg-indigo-400 cursor-not-allowed'
+                    : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                }`}
               >
-                Sign In
+                {loading ? 'Signing In...' : 'Sign In'}
               </button>
             </div>
           </form>
@@ -138,9 +194,9 @@ const LoginPage = () => {
           {/* Sign up option */}
           <div className="mt-8 text-center">
             <span className="text-sm text-gray-600">Don't have an account? </span>
-            <a href="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+            <Link to="/register" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
               Create one
-            </a>
+            </Link>
           </div>
         </div>
       </div>

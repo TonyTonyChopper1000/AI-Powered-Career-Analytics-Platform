@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FiBarChart2, FiMenu, FiX, FiUser, FiLogOut } from 'react-icons/fi';
-import { signOut } from "../firebase"
-import { AuthContext } from "../contexts/AuthContext"
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { FiBarChart2, FiMenu, FiX, FiUser, FiLogOut, FiUsers, FiMessageCircle } from 'react-icons/fi';
+import { signOut } from '../firebase';
+import { AuthContext } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { currentUser } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -48,6 +49,11 @@ const Navbar = () => {
     setIsProfileMenuOpen(false);
   };
 
+  // Check if the current path matches the link
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
+
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-indigo-900/95 backdrop-blur-sm py-3 shadow-lg' : 'bg-transparent py-6'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -63,16 +69,20 @@ const Navbar = () => {
           <div className="hidden md:flex space-x-8 text-gray-200">
             {currentUser?.role === 'admin' ? (
               <>
-                <Link to="/admin/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
-                <Link to="/admin/users" className="hover:text-white transition-colors">Users</Link>
-                <Link to="/admin/reports" className="hover:text-white transition-colors">Reports</Link>
+                <Link to="/admin/dashboard" className={`transition-colors ${isActive('/admin/dashboard') ? 'text-white font-medium' : 'hover:text-white'}`}>Dashboard</Link>
+                <Link to="/admin/users" className={`transition-colors ${isActive('/admin/users') ? 'text-white font-medium' : 'hover:text-white'}`}>Users</Link>
+                <Link to="/admin/reports" className={`transition-colors ${isActive('/admin/reports') ? 'text-white font-medium' : 'hover:text-white'}`}>Reports</Link>
               </>
             ) : (
               <>
-                <Link to="/home" className="hover:text-white transition-colors">Home</Link>
-                <Link to="/features" className="hover:text-white transition-colors">Features</Link>
-                <Link to="/services" className="hover:text-white transition-colors">Services</Link>
-                <Link to="/feedback" className="hover:text-white transition-colors">Feedback</Link>
+                <Link to="/home" className={`transition-colors ${isActive('/home') ? 'text-white font-medium' : 'hover:text-white'}`}>Home</Link>
+                <Link to="/mentors" className={`transition-colors ${isActive('/mentors') ? 'text-white font-medium' : 'hover:text-white'} flex items-center`}>
+                  <FiUsers className="mr-1 h-4 w-4" />
+                  Mentors
+                </Link>
+                <Link to="/features" className={`transition-colors ${isActive('/features') ? 'text-white font-medium' : 'hover:text-white'}`}>Features</Link>
+                <Link to="/services" className={`transition-colors ${isActive('/services') ? 'text-white font-medium' : 'hover:text-white'}`}>Services</Link>
+                <Link to="/feedback" className={`transition-colors ${isActive('/feedback') ? 'text-white font-medium' : 'hover:text-white'}`}>Feedback</Link>
               </>
             )}
           </div>
@@ -149,16 +159,20 @@ const Navbar = () => {
           <div className="px-4 space-y-3">
             {currentUser?.role === 'admin' ? (
               <>
-                <Link to="/admin/dashboard" onClick={closeMenus} className="block text-gray-200 hover:text-white transition-colors py-2">Dashboard</Link>
-                <Link to="/admin/users" onClick={closeMenus} className="block text-gray-200 hover:text-white transition-colors py-2">Users</Link>
-                <Link to="/admin/reports" onClick={closeMenus} className="block text-gray-200 hover:text-white transition-colors py-2">Reports</Link>
+                <Link to="/admin/dashboard" onClick={closeMenus} className={`block py-2 transition-colors ${isActive('/admin/dashboard') ? 'text-white font-medium' : 'text-gray-200 hover:text-white'}`}>Dashboard</Link>
+                <Link to="/admin/users" onClick={closeMenus} className={`block py-2 transition-colors ${isActive('/admin/users') ? 'text-white font-medium' : 'text-gray-200 hover:text-white'}`}>Users</Link>
+                <Link to="/admin/reports" onClick={closeMenus} className={`block py-2 transition-colors ${isActive('/admin/reports') ? 'text-white font-medium' : 'text-gray-200 hover:text-white'}`}>Reports</Link>
               </>
             ) : (
               <>
-                <Link to="/home" onClick={closeMenus} className="block text-gray-200 hover:text-white transition-colors py-2">Home</Link>
-                <Link to="/features" onClick={closeMenus} className="block text-gray-200 hover:text-white transition-colors py-2">Features</Link>
-                <Link to="/services" onClick={closeMenus} className="block text-gray-200 hover:text-white transition-colors py-2">Services</Link>
-                <Link to="/feedback" onClick={closeMenus} className="block text-gray-200 hover:text-white transition-colors py-2">Feedback</Link>
+                <Link to="/home" onClick={closeMenus} className={`block py-2 transition-colors ${isActive('/home') ? 'text-white font-medium' : 'text-gray-200 hover:text-white'}`}>Home</Link>
+                <Link to="/mentors" onClick={closeMenus} className={`block py-2 transition-colors ${isActive('/mentors') ? 'text-white font-medium' : 'text-gray-200 hover:text-white'} flex items-center`}>
+                  <FiUsers className="mr-1 h-4 w-4" />
+                  Mentors
+                </Link>
+                <Link to="/features" onClick={closeMenus} className={`block py-2 transition-colors ${isActive('/features') ? 'text-white font-medium' : 'text-gray-200 hover:text-white'}`}>Features</Link>
+                <Link to="/services" onClick={closeMenus} className={`block py-2 transition-colors ${isActive('/services') ? 'text-white font-medium' : 'text-gray-200 hover:text-white'}`}>Services</Link>
+                <Link to="/feedback" onClick={closeMenus} className={`block py-2 transition-colors ${isActive('/feedback') ? 'text-white font-medium' : 'text-gray-200 hover:text-white'}`}>Feedback</Link>
               </>
             )}
             

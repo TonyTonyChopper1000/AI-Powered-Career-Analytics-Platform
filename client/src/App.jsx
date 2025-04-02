@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,10 +17,32 @@ import LandingPage from './pages/LandingPage';
 import UserProfile from './pages/UserProfile';
 import AdminDashboard from './pages/AdminDashboard';
 import UserFeedback from './pages/UserfeedbackPage';
+import MentorMatchingPage from './pages/MentorMatchingPage';
+
+// Firestore initialization
+import { initializeFirestore } from './utils/initializeFirestore';
+import { auth } from './firebase';
 
 const App = () => {
-  return (
+  // Initialize Firestore with sample data on app load
+  useEffect(() => {
+    const initializeData = async () => {
+      try {
+        // Only initialize if user is authenticated
+        const user = auth.currentUser;
+        if (user) {
+          await initializeFirestore(user.uid);
+        }
+      } catch (error) {
+        console.error('Error initializing data:', error);
+      }
+    };
     
+    initializeData();
+  }, []);
+  
+  return (
+    <Router>
       <AuthProvider>
         <ToastContainer position="top-right" autoClose={5000} />
         <Routes>
@@ -69,6 +91,16 @@ const App = () => {
             } 
           />
           
+          {/* Mentor Matching Route */}
+          <Route 
+            path="/mentors" 
+            element={
+              <ProtectedRoute>
+                <MentorMatchingPage />
+              </ProtectedRoute>
+            } 
+          />
+          
           {/* Admin Routes */}
           <Route 
             path="/admin/dashboard" 
@@ -99,7 +131,7 @@ const App = () => {
           />
         </Routes>
       </AuthProvider>
-    
+    </Router>
   );
 };
 

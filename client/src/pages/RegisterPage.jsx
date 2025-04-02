@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
-import { FiMail, FiLock, FiEye, FiEyeOff, FiUser, FiPhone } from 'react-icons/fi';
+import { Link, useNavigate } from 'react-router-dom';
+import { FiMail, FiLock, FiEye, FiEyeOff, FiUser, FiPhone, FiUserCheck } from 'react-icons/fi';
+import { registerWithEmailAndPassword } from '../services/firebase';
+import { toast } from 'react-toastify';
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: 'user' // Default role
   });
 
   const togglePasswordVisibility = () => {
@@ -29,10 +35,53 @@ const RegisterPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords don't match");
+      return false;
+    }
+
+    if (formData.password.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return false;
+    }
+
+    // Password should contain at least one number and one special character
+    const hasNumber = /\d/.test(formData.password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(formData.password);
+    
+    if (!hasNumber || !hasSpecial) {
+      toast.error("Password must contain at least one number and one special character");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Registration attempted with:', formData);
-    // Handle registration logic here
+    
+    if (!validateForm()) return;
+    
+    setLoading(true);
+    
+    try {
+      const { email, password, ...userData } = formData;
+      const result = await registerWithEmailAndPassword(email, password, userData);
+      
+      if (result.success) {
+        toast.success("Registration successful! Please verify your email.");
+        navigate('/email-verification', { 
+          state: { email: formData.email } 
+        });
+      } else {
+        toast.error(result.error || "Registration failed. Please try again.");
+      }
+    } catch (error) {
+      toast.error(error.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,7 +89,7 @@ const RegisterPage = () => {
       {/* Left side - Image */}
       <div className="hidden md:flex md:w-1/2 bg-indigo-600 relative overflow-hidden">
         <img 
-          src="https://i.pinimg.com/736x/ed/b9/e9/edb9e90436af10df178fa9be61f22035.jpg" 
+          src="/images/register-bg.jpg" 
           alt="Registration background" 
           className="object-cover w-full h-full opacity-80"
         />
@@ -137,6 +186,29 @@ const RegisterPage = () => {
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="+1 (555) 000-0000"
                 />
+              </div>
+            </div>
+
+            {/* Role selection */}
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+                Account Type
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiUserCheck className="h-5 w-5 text-gray-400" />
+                </div>
+                <select
+                  id="role"
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                >
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </select>
               </div>
             </div>
 
@@ -242,9 +314,14 @@ const RegisterPage = () => {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                disabled={loading}
+                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white transition-colors duration-200 ${
+                  loading
+                    ? 'bg-indigo-400 cursor-not-allowed'
+                    : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                }`}
               >
-                Create Account
+                {loading ? 'Creating Account...' : 'Create Account'}
               </button>
             </div>
           </form>
@@ -252,9 +329,9 @@ const RegisterPage = () => {
           {/* Sign in option */}
           <div className="mt-6 text-center">
             <span className="text-sm text-gray-600">Already have an account? </span>
-            <a href="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+            <Link to="/" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
               Sign in
-            </a>
+            </Link>
           </div>
         </div>
       </div>

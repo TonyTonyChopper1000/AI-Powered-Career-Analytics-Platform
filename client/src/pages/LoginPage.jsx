@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiUser } from 'react-icons/fi';
-import { signInWithEmail } from '../services/firebase';
+import { signInWithEmail } from "../firebase"
 import { toast } from 'react-toastify';
 
 const LoginPage = () => {

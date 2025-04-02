@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FiStar, 
   FiSmile, 
@@ -10,8 +10,12 @@ import {
 
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { auth, db } from '../firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 
 const UserFeedback = () => {
+  const [currentUser, setCurrentUser] = useState(null);
   const [feedbackType, setFeedbackType] = useState('');
   const [satisfaction, setSatisfaction] = useState(null);
   const [ratings, setRatings] = useState({
@@ -24,6 +28,20 @@ const UserFeedback = () => {
   const [feedbackText, setFeedbackText] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
+  const [contactPermission, setContactPermission] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Get current user on component mount
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (user) {
+      setCurrentUser({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName
+      });
+    }
+  }, []);
 
   const feedbackTypes = [
     { id: 'general', label: 'General Feedback' },
@@ -69,35 +87,62 @@ const UserFeedback = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
-      // Here you would typically send the data to your API
-      console.log({
-        feedbackType,
-        satisfaction,
-        ratings,
-        feedbackText
-      });
+      setLoading(true);
       
-      // Show success message
-      setSubmitted(true);
-      
-      // Reset form after submission
-      setTimeout(() => {
-        setFeedbackType('');
-        setSatisfaction(null);
-        setRatings({
-          usability: 0,
-          features: 0,
-          recommendations: 0,
-          support: 0,
-          overall: 0
-        });
-        setFeedbackText('');
-        setSubmitted(false);
-      }, 3000);
+      try {
+        // Prepare feedback data
+        const feedbackData = {
+          feedbackType,
+          satisfaction,
+          ratings,
+          feedbackText,
+          contactPermission,
+          createdAt: serverTimestamp(),
+          status: 'new' // For tracking feedback status (new, reviewed, resolved)
+        };
+        
+        // Add user data if available
+        if (currentUser) {
+          feedbackData.userId = currentUser.uid;
+          feedbackData.userEmail = currentUser.email;
+          feedbackData.userName = currentUser.displayName || '';
+        }
+        
+        // Save to Firestore
+        const feedbackRef = collection(db, 'feedback');
+        await addDoc(feedbackRef, feedbackData);
+        
+        console.log('Feedback submitted successfully:', feedbackData);
+        toast.success('Thank you for your feedback!');
+        
+        // Show success message
+        setSubmitted(true);
+        
+        // Reset form after submission
+        setTimeout(() => {
+          setFeedbackType('');
+          setSatisfaction(null);
+          setRatings({
+            usability: 0,
+            features: 0,
+            recommendations: 0,
+            support: 0,
+            overall: 0
+          });
+          setFeedbackText('');
+          setContactPermission(false);
+          setSubmitted(false);
+        }, 3000);
+      } catch (error) {
+        console.error('Error submitting feedback:', error);
+        toast.error('Failed to submit feedback. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -298,6 +343,7 @@ const UserFeedback = () => {
                     setErrors(prev => ({ ...prev, feedbackText: undefined }));
                   }
                 }}
+                maxLength={500}
               ></textarea>
               <div className="flex justify-between mt-2">
                 {errors.feedbackText ? (
@@ -317,6 +363,8 @@ const UserFeedback = () => {
                     id="contact"
                     type="checkbox"
                     className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                    checked={contactPermission}
+                    onChange={(e) => setContactPermission(e.target.checked)}
                   />
                 </div>
                 <div className="ml-3 text-sm">
@@ -331,10 +379,25 @@ const UserFeedback = () => {
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+                disabled={loading}
+                className={`flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition-colors ${
+                  loading ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
               >
-                <FiSend className="mr-2" />
-                Submit Feedback
+                {loading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <FiSend className="mr-2" />
+                    Submit Feedback
+                  </>
+                )}
               </button>
             </div>
           </form>

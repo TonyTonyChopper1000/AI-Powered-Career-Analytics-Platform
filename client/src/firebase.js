@@ -1,3 +1,4 @@
+// This file should be placed in the src/ directory
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {
@@ -35,9 +36,11 @@ const db = getFirestore(app);
 // Register new user with email and password
 export const registerWithEmailAndPassword = async (email, password, userData) => {
   try {
+    console.log("Attempting to register user:", email);
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     
+    console.log("User created, now storing additional data");
     // Store additional user data in Firestore
     await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
@@ -49,11 +52,14 @@ export const registerWithEmailAndPassword = async (email, password, userData) =>
       createdAt: new Date().toISOString(),
     });
     
+    console.log("Sending email verification");
     // Send email verification
     await sendEmailVerification(user);
     
+    console.log("Registration successful");
     return { user, success: true };
   } catch (error) {
+    console.error("Registration error:", error);
     return { error: error.message, success: false };
   }
 };

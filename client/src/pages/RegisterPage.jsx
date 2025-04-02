@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiUser, FiPhone, FiUserCheck } from 'react-icons/fi';
-import { registerWithEmailAndPassword } from "../firebase"
+// Import directly from the firebase.js file in the src directory
+import { registerWithEmailAndPassword } from "../firebase";
 import { toast } from 'react-toastify';
 
 const RegisterPage = () => {
@@ -36,12 +37,15 @@ const RegisterPage = () => {
   };
 
   const validateForm = () => {
+    console.log("Validating form...");
     if (formData.password !== formData.confirmPassword) {
+      console.log("Passwords don't match");
       toast.error("Passwords don't match");
       return false;
     }
 
     if (formData.password.length < 8) {
+      console.log("Password too short");
       toast.error("Password must be at least 8 characters");
       return false;
     }
@@ -51,38 +55,53 @@ const RegisterPage = () => {
     const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(formData.password);
     
     if (!hasNumber || !hasSpecial) {
+      console.log("Password missing number or special character");
       toast.error("Password must contain at least one number and one special character");
       return false;
     }
 
+    console.log("Form validation passed");
     return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form submitted");
     
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      console.log("Form validation failed");
+      return;
+    }
     
     setLoading(true);
+    console.log("Starting registration process...");
     
     try {
       const { email, password, ...userData } = formData;
+      console.log("Calling registerWithEmailAndPassword with:", { email, userData });
+      
       const result = await registerWithEmailAndPassword(email, password, userData);
+      console.log("Registration result:", result);
       
       if (result.success) {
+        console.log("Registration successful");
         toast.success("Registration successful! Please verify your email.");
         navigate('/email-verification', { 
           state: { email: formData.email } 
         });
       } else {
+        console.log("Registration failed:", result.error);
         toast.error(result.error || "Registration failed. Please try again.");
       }
     } catch (error) {
+      console.error("Registration error:", error);
       toast.error(error.message || "An unexpected error occurred");
     } finally {
       setLoading(false);
     }
   };
+
+  console.log("Component rendering. Loading state:", loading);
 
   return (
     <div className="min-h-screen flex">
@@ -320,6 +339,7 @@ const RegisterPage = () => {
                     ? 'bg-indigo-400 cursor-not-allowed'
                     : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
                 }`}
+                onClick={() => console.log("Submit button clicked")}
               >
                 {loading ? 'Creating Account...' : 'Create Account'}
               </button>

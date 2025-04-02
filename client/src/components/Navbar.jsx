@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiBarChart2, FiMenu, FiX, FiUser, FiLogOut } from 'react-icons/fi';
-import { signOut } from '../services/firebase';
-import { AuthContext } from '../contexts/AuthContext';
+import { signOut } from "../firebase"
+import { AuthContext } from "../contexts/AuthContext"
 import { toast } from 'react-toastify';
 
 const Navbar = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiBarChart2, FiMenu, FiX, FiUser, FiLogOut, FiUsers, FiMessageCircle } from 'react-icons/fi';
+import { FiBarChart2, FiMenu, FiX, FiUser, FiLogOut, FiUsers, FiDollarSign } from 'react-icons/fi';
 import { signOut } from '../firebase';
 import { AuthContext } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
@@ -80,8 +80,10 @@ const Navbar = () => {
                   <FiUsers className="mr-1 h-4 w-4" />
                   Mentors
                 </Link>
-                <Link to="/features" className={`transition-colors ${isActive('/features') ? 'text-white font-medium' : 'hover:text-white'}`}>Features</Link>
-                <Link to="/services" className={`transition-colors ${isActive('/services') ? 'text-white font-medium' : 'hover:text-white'}`}>Services</Link>
+                <Link to="/salary-prediction" className={`transition-colors ${isActive('/salary-prediction') ? 'text-white font-medium' : 'hover:text-white'} flex items-center`}>
+                  <FiDollarSign className="mr-1 h-4 w-4" />
+                  Salary Insights
+                </Link>
                 <Link to="/feedback" className={`transition-colors ${isActive('/feedback') ? 'text-white font-medium' : 'hover:text-white'}`}>Feedback</Link>
               </>
             )}
@@ -170,8 +172,10 @@ const Navbar = () => {
                   <FiUsers className="mr-1 h-4 w-4" />
                   Mentors
                 </Link>
-                <Link to="/features" onClick={closeMenus} className={`block py-2 transition-colors ${isActive('/features') ? 'text-white font-medium' : 'text-gray-200 hover:text-white'}`}>Features</Link>
-                <Link to="/services" onClick={closeMenus} className={`block py-2 transition-colors ${isActive('/services') ? 'text-white font-medium' : 'text-gray-200 hover:text-white'}`}>Services</Link>
+                <Link to="/salary-prediction" onClick={closeMenus} className={`block py-2 transition-colors ${isActive('/salary-prediction') ? 'text-white font-medium' : 'text-gray-200 hover:text-white'} flex items-center`}>
+                  <FiDollarSign className="mr-1 h-4 w-4" />
+                  Salary Insights
+                </Link>
                 <Link to="/feedback" onClick={closeMenus} className={`block py-2 transition-colors ${isActive('/feedback') ? 'text-white font-medium' : 'text-gray-200 hover:text-white'}`}>Feedback</Link>
               </>
             )}

@@ -16,8 +16,9 @@ import EmailVerificationPage from './pages/EmailVerificationPage';
 import LandingPage from './pages/LandingPage';
 import UserProfile from './pages/UserProfile';
 import AdminDashboard from './pages/AdminDashboard';
-import UserFeedback from './pages/UserfeedbackPage';
+import UserFeedback from './pages/UserFeedbackPage';
 import MentorMatchingPage from './pages/MentorMatchingPage';
+import SalaryPredictionPage from './pages/SalaryPredictionPage';
 
 // Firestore initialization
 import { initializeFirestore } from './utils/initializeFirestore';
@@ -97,6 +98,16 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <MentorMatchingPage />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Salary Prediction Route */}
+          <Route 
+            path="/salary-prediction" 
+            element={
+              <ProtectedRoute>
+                <SalaryPredictionPage />
               </ProtectedRoute>
             } 
           />

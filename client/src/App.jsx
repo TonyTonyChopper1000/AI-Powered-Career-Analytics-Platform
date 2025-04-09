@@ -16,7 +16,7 @@ import EmailVerificationPage from './pages/EmailVerificationPage';
 import LandingPage from './pages/LandingPage';
 import UserProfile from './pages/UserProfile';
 import AdminDashboard from './pages/AdminDashboard';
-import UserFeedback from './pages/UserFeedbackPage';
+import UserFeedback from './pages/UserfeedbackPage';
 import MentorMatchingPage from './pages/MentorMatchingPage';
 import SalaryPredictionPage from './pages/SalaryPredictionPage';
 

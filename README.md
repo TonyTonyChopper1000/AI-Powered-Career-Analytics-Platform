@@ -18,20 +18,18 @@ This platform represents an innovative approach to educational content creation 
 
 
 ## 💫 Unique Features:
-- Mentor Matching System 
-- Customized Learning Path Generation
-- Automated Resume Scoring 
+- AI Powered Career Insights
+- Automated Resume Generation
 
 ## 💫 Reamaining Features:
-- User and Admin's Login and Registration (2 Factor Authentication).
+- User and Admin's Login and Registration 
 - User Profile Management
 - Personalized User Dashboard
-- Recommended Courses based on Skills and Skill Gap
-- Networking and Connections Recommendation
-- Goal Setting for the Month and Progress Tracker
+- Recommended Skills based on Skills and Skill Gap
+- AI Generated Quizzes
 - Salary Predicttion Based on Skills
 - Weekly Progress Report
-- AI Powered Chatbot for the Carrer Guideance and Any Regarding the Platform
+- Cover Letter Generation for the JOB Applying
 
 
 ## TechStack
